@@ -12,7 +12,8 @@ class ListViewController: UIViewController, UITableViewDataSource, UISearchBarDe
     
     @IBOutlet weak var tableView: UITableView!
     
-    var gameList: [Game] = []
+    var filteredGameList: [Game] = []
+    var originalGameList: [Game] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,28 +24,32 @@ class ListViewController: UIViewController, UITableViewDataSource, UISearchBarDe
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return gameList.count
+        return filteredGameList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath) as! GameViewCell
-        let game = gameList[indexPath.row]
+        let game = filteredGameList[indexPath.row]
         cell.render(game: game)
         return cell
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText .isEmpty {
-            getAllGames()
+            if searchText.isEmpty {
+                filteredGameList = originalGameList
+            } else {
+                filteredGameList = originalGameList.filter { it in
+                    it.title.range(of: searchText, options: .caseInsensitive) != nil
+                    || it.genre.range(of: searchText, options: .caseInsensitive) != nil
+                }
+            }
+            tableView.reloadData()
         }
-        else {
-            
-        }
-    }
     
     func getAllGames() {
         Task {
-            gameList = await ServiceApi().getAllGames()
+            originalGameList = await ServiceApi().getAllGames()
+            filteredGameList = originalGameList
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -56,7 +61,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UISearchBarDe
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
             let detailVC = segue.destination as! DetailViewController
             let indexPath = tableView.indexPathForSelectedRow!
-            let game = gameList[indexPath.row]
+            let game = filteredGameList[indexPath.row]
             detailVC.game = game
             tableView.deselectRow(at: indexPath, animated: true)
         }

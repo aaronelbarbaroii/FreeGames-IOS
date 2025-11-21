@@ -66,6 +66,16 @@ class DetailViewController: UIViewController {
         }
     }
     
+    @IBAction func shareContent(_ sender: Any) {
+        let text = "Check out this game: \(game.title) - \(game.profileUrl)"
+        let textToShare = [ text ]
+        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+                
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+                
+        self.present(activityViewController, animated: true, completion: nil)
+    }
+    
     func getGameById() {
         Task {
             game = await ServiceApi().getGameById(id: game.id)

@@ -12,6 +12,7 @@ class GameViewCell: UITableViewCell {
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var genreLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var iconPlatform: UIImageView!
     
     
@@ -41,6 +42,7 @@ class GameViewCell: UITableViewCell {
     func render(game: Game) {
         titleLabel.text = game.title
         genreLabel.text = game.genre
+        descriptionLabel.text = game.descriptionShort
         if(game.platform == "Web Browser"){
             iconPlatform.image = UIImage(systemName: "globe")
         }
