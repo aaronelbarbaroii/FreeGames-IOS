@@ -21,9 +21,9 @@ class ServiceApi {
             
             let gameList = try JSONDecoder().decode([Game].self, from: data)
             
-            /* if let str = String(data: data, encoding: .utf8) {
+            /*if let str = String(data: data, encoding: .utf8) {
                 print("Successfully decoded: \(str)")
-            } */
+            }*/
             return gameList
         } catch {
             print(error)
